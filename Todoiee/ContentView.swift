@@ -11,12 +11,7 @@ struct ContentView: View {
                         ForEach(todoList.of(tag: tag)) { todo in
                             TodoView(todo)
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button {
-                                        todoList.remove(todo)
-                                    } label: {
-                                        Image(systemName: "trash")
-                                        }
-                                    .tint(.red)
+                                    RemoveTodoView(todo)
                                 }
                         }
                         TodoPlaceHolderView(tag)
@@ -25,14 +20,46 @@ struct ContentView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        todoList.removeDone()
-                    } label: {
-                        Image(systemName: "trash")
-                    }
+                    RemoveAllTodoView()
                 }
             }
         }
+    }
+}
+
+struct RemoveAllTodoView: View {
+    @Environment(TodoList.self) var todoList: TodoList
+
+    var body: some View {
+        Button {
+            withAnimation {
+                todoList.removeDone()
+            }
+        } label: {
+            Image(systemName: "trash")
+        }
+        .tint(.red)
+    }
+}
+
+
+struct RemoveTodoView: View {
+    @Environment(TodoList.self) var todoList: TodoList
+    let todo: Todo
+    
+    init(_ todo: Todo) {
+        self.todo = todo
+    }
+    
+    var body: some View {
+        Button {
+            withAnimation {
+                todoList.remove(todo)
+            }
+        } label: {
+            Image(systemName: "trash")
+            }
+        .tint(.red)
     }
 }
 
